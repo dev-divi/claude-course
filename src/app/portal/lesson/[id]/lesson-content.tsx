@@ -11,7 +11,7 @@ function CopyButton({ code }: { code: string }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       }}
-      className="text-xs text-zinc-500 hover:text-zinc-300 transition"
+      className="code-block-copy"
     >
       {copied ? "Copied!" : "Copy"}
     </button>
@@ -75,14 +75,12 @@ export function LessonContent({ content }: { content: string }) {
       }
       const code = codeLines.join("\n");
       elements.push(
-        <div key={i} className="relative my-5 rounded-xl overflow-hidden border border-zinc-800">
-          <div className="flex items-center justify-between px-4 py-2 bg-zinc-800/60 border-b border-zinc-700/50">
-            <span className="text-xs text-zinc-500 font-mono">
-              {lang || "code"}
-            </span>
+        <div key={i} className="code-block">
+          <div className="code-block-header">
+            <span className="code-block-lang">{lang || "code"}</span>
             <CopyButton code={code} />
           </div>
-          <pre className="p-4 overflow-x-auto text-xs font-mono text-zinc-300 leading-relaxed bg-zinc-900">
+          <pre>
             <code>{code}</code>
           </pre>
         </div>
@@ -93,33 +91,21 @@ export function LessonContent({ content }: { content: string }) {
 
     // h1
     if (line.startsWith("# ") && !line.startsWith("## ")) {
-      elements.push(
-        <h1 key={i} className="text-xl font-semibold text-white mt-8 mb-3">
-          {line.slice(2)}
-        </h1>
-      );
+      elements.push(<h1 key={i}>{line.slice(2)}</h1>);
       i++;
       continue;
     }
 
     // h2
     if (line.startsWith("## ") && !line.startsWith("### ")) {
-      elements.push(
-        <h2 key={i} className="text-base font-semibold text-white mt-7 mb-2">
-          {line.slice(3)}
-        </h2>
-      );
+      elements.push(<h2 key={i}>{line.slice(3)}</h2>);
       i++;
       continue;
     }
 
     // h3
     if (line.startsWith("### ")) {
-      elements.push(
-        <h3 key={i} className="text-sm font-semibold text-white mt-5 mb-2">
-          {line.slice(4)}
-        </h3>
-      );
+      elements.push(<h3 key={i}>{line.slice(4)}</h3>);
       i++;
       continue;
     }
@@ -132,10 +118,7 @@ export function LessonContent({ content }: { content: string }) {
         i++;
       }
       elements.push(
-        <blockquote
-          key={i}
-          className="my-5 border-l-2 border-zinc-600 pl-4 text-zinc-400 italic space-y-1"
-        >
+        <blockquote key={i}>
           {quoteLines.map((ql, qi) => (
             <p key={qi}>{parseInline(ql, `bq-${i}-${qi}`)}</p>
           ))}
@@ -153,7 +136,7 @@ export function LessonContent({ content }: { content: string }) {
           key={i}
           src={imgMatch[2]}
           alt={imgMatch[1]}
-          className="my-5 rounded-lg max-w-full border border-zinc-800"
+          className=""
         />
       );
       i++;
@@ -181,12 +164,10 @@ export function LessonContent({ content }: { content: string }) {
     }
     if (paraLines.length > 0) {
       elements.push(
-        <p key={i} className="my-4 leading-7 text-zinc-300">
-          {parseInline(paraLines.join(" "), i)}
-        </p>
+        <p key={i}>{parseInline(paraLines.join(" "), i)}</p>
       );
     }
   }
 
-  return <div className="text-sm">{elements}</div>;
+  return <div className="lesson-content">{elements}</div>;
 }

@@ -16,7 +16,8 @@ model User {
   contactMethod String
   role          String           @default("student")
   createdAt     DateTime         @default(now())
-  progress      LessonProgress[]
+  progress        LessonProgress[]
+  behaviorEvents  BehaviorEvent[]
 }
 
 model Module {
@@ -39,6 +40,18 @@ model Lesson {
   progress LessonProgress[]
 
   @@index([moduleId])
+}
+
+model BehaviorEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  eventType String
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([eventType])
 }
 
 model LessonProgress {
